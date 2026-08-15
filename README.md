@@ -9,6 +9,30 @@ Search Google Scholar for academic papers and get structured metadata — title,
 year, cited-by count, abstract-excerpt snippet, PDF link, versions — plus full
 abstracts from publisher pages and **CSV export** of any result set.
 
+
+## Feature comparison
+
+| Capability | This plugin (Scholar Lab for DSH) | Google Scholar Labs |
+| --- | --- | --- |
+| **Access** | No login needed, works from any session/host | **Login required** (no anonymous API; also no CORS from third-party pages) |
+| **Search source** | Same underlying Scholar index (classic endpoint) | Same index, but an AI "research mode" on top |
+| **Structured metadata (title, authors, journal, year, citations)** | ✅ Full structured JSON per paper | ✅ (the "familiar Scholar features") but as web UI, not structured data |
+| **Full journal names** | ✅ Resolved from bundled JCR database | Shows venue as Scholar renders it |
+| **JCR impact factor + quartile** | ✅ JCR 2025 (June 2026 release), 22.6k journals | ❌ Scholar doesn't show IFs |
+| **Full abstract + DOI, volume/issue/pages, publisher** | ✅ via `scholar_abstract` (publisher meta tags) | Labs gives summaries, not structured bibliographic records |
+| **CSV export (all loaded papers, 22 columns)** | ✅ One click → downloads to your laptop | ❌ No bulk/structured export |
+| **Pagination / "load more"** | ✅ Up to 100 papers per search | Page-based browsing, no export |
+| **Use from chat / automation** | ✅ Model tools `scholar_search` / `scholar_abstract` — results feed the agent | ❌ Browser UI only |
+
+
+## In short
+
+- **Scholar Labs wins on**: *understanding research questions* — AI-generated overviews, per-paper helpfulness notes, and follow-up Q&A. It's a **reading/exploration assistant**.
+- **This plugin wins on**: *structured, machine-usable data* — clean metadata (title/authors/journal/year/citations), **full journal names + JCR 2025 impact factors & quartiles** (which Scholar never shows), **full abstracts + DOIs**, **bulk CSV export to your laptop**, pagination up to 100 papers, and **deep integration with the chat agent** (search results feed directly into what the assistant can reason about). No login, works everywhere.
+
+They're complementary: use Labs when you want an AI conversation about a research area; use this plugin when you want a reproducible list of papers with bibliometrics you can export and cite-check. The panel even links to your logged-in Labs page, so both are one click apart.
+
+
 ## Install (profile bundle — the community path)
 
 ```sh
