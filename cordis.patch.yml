@@ -1,0 +1,18 @@
+# dsh-scholar-lab bundle patch: adds the Google Scholar tools (host half) and
+# the search panel (client half, browser roster) to the profile.
+#
+# Layer semantics (see @deepseek-ai/dsh-base): a patch REPLACES the targeted
+# row's whole config and rows are addressed by id with last-write-wins. The
+# ids below are unique to this bundle, so no in-box row is touched.
+- insert:
+    # Host row: the loader instantiates the package's main export as a Cordis
+    # plugin (lib/host.js). Registers scholar_search / scholar_abstract tools
+    # and provides the `scholarLab` service the client half calls.
+    - id: scholar-lab
+      name: '@yourscope/dsh-scholar-lab'
+
+    # Browser-roster row: @deepseek-ai/dsh-client-modules scans packages whose
+    # manifest declares `dsh.client` and serves /plugins/<id>/client.js from
+    # the package's ./client export (lib/client.js).
+    - id: scholar-lab-client
+      name: '@yourscope/dsh-scholar-lab'

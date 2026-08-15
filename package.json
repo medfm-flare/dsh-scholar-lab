@@ -1,0 +1,54 @@
+{
+  "name": "@yourscope/dsh-scholar-lab",
+  "version": "0.1.0",
+  "description": "Google Scholar search agent for DSH: structured paper metadata, JCR impact factors, full abstracts, and CSV export. Installable as a profile bundle (npm) or as a dynamic Cordis plugin.",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "bundle",
+    "google-scholar",
+    "scholar",
+    "biomedical",
+    "literature-search",
+    "impact-factor"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR-ORG/dsh-scholar-lab.git"
+  },
+  "homepage": "https://github.com/YOUR-ORG/dsh-scholar-lab#readme",
+  "main": "lib/host.js",
+  "exports": {
+    ".": "./lib/host.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "data",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  }
+}
