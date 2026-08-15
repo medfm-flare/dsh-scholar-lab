@@ -107,12 +107,12 @@ The packaged API was mapped from the in-box bundles (`@deepseek-ai/dsh-base`,
 `@deepseek-ai/dsh-client-ui-cordis`). Two points should be confirmed against the
 running app before publishing a public release:
 
-1. **Client → host RPC service name.** The client calls
-   `ctx.remote.scholarLab.search(...)` / `.exportCsv(...)`; the host provides the
-   `scholarLab` service. If the gateway expects a different host-side service id
-   (e.g. `remote.scholarLab`), change `ctx.provide('scholarLab', ...)` in
-   `lib/host.js` and the `remote.scholarLab` entry in the client `inject` list
-   together.
+1. **Browser → host bridge.** The client bundle talks to the host over the
+   plain same-origin HTTP routes the host half registers (`/scholar-lab/search`
+   and `/scholar-lab/export`, same-origin enforced on POST) — the same pattern
+   dshmarket uses. `ctx.remote.*` typert namespaces are first-party only and
+   must not be used by community client bundles. If you rename the routes,
+   change `lib/host.js` and the `callHost` calls in `lib/client.js` together.
 2. **Slot keys.** The client injects into `tool.view.cordis` (panel) and
    `tool.call.toolview` (result cards, keyed by tool name). If the packaged slot
    names differ from the dynamic runner's, adjust the `slots.inject(...)` calls
