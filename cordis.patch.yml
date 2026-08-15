@@ -11,8 +11,7 @@
     - id: scholar-lab
       name: '@junma11/dsh-scholar-lab'
 
-    # Browser-roster row: @deepseek-ai/dsh-client-modules scans packages whose
-    # manifest declares `dsh.client` and serves /plugins/<id>/client.js from
-    # the package's ./client export (lib/client.js).
-    - id: scholar-lab-client
-      name: '@junma11/dsh-scholar-lab'
+    # No loader row for the browser half: @deepseek-ai/dsh-client-modules
+    # discovers it from this package's `dsh.client` manifest declaration and
+    # serves the ./client export itself. A second row naming this package
+    # would mount lib/host.js again and fail on duplicate tool registration.
