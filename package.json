@@ -28,6 +28,7 @@
   "files": [
     "lib",
     "data",
+    "dynamic",
     "cordis.patch.yml",
     "README.md",
     "LICENSE"

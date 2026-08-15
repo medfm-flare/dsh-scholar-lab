@@ -65,18 +65,22 @@ Per-paper fields: `title, authors[], authors_raw, venue, journal_full, impact_fa
 
 | File                                 | Contents                                                                                                                                                                                                    |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lib/host.js`                      | Host half:`scholar_search` / `scholar_abstract` tools (`ctx.tools.register` + `defineTool` from `@deepseek-ai/dsh-tools`), the `scholarLab` service (`ctx.provide`) for the panel, CSV writer |
-| `lib/client.js`                    | Client half: browser bundle in the web-shell module-table format (`window.__ModuleLoader__.load`), search panel + tool result cards                                                                       |
+| `lib/host.js`                      | Packaged host half:`scholar_search` / `scholar_abstract` tools (`ctx.tools.register` + `defineTool` from `@deepseek-ai/dsh-tools`), the `/scholar-lab/search` + `/scholar-lab/export` webServer routes, CSV writer |
+| `lib/client.js`                    | Packaged client half: browser bundle in the web-shell module-table format (`window.__ModuleLoader__.load`), search panel + tool result cards (talks to the host over the HTTP routes) |
 | `data/journal-impact-factors.json` | JCR 2025 database (full names, IFs, quartiles) — 22,643 journals, 1.5 MB, read from the package via`import.meta.url`                                                                                     |
-| `cordis.patch.yml`                 | Bundle patch layer: inserts the`scholar-lab` (host) and `scholar-lab-client` (browser roster) rows                                                                                                      |
-| `scholar-lab/` (source)            | The original dynamic Cordis plugin files this package was generated from                                                                                                                                    |
+| `cordis.patch.yml`                 | Bundle patch layer: inserts the`scholar-lab` host row (the browser row comes from the package's `dsh.client` manifest)                                                                                  |
+| `dynamic/plugin.host.js`           | Dynamic Cordis plugin form (host half) — the zero-install variant; uses `harness.*` and `host.call`, no npm needed (see below)                                                                            |
+| `dynamic/plugin.client.js`         | Dynamic Cordis plugin form (client half) — `host.call('scholar-search' / 'scholar-export')` bridge                                                                                                       |
 
 ## Develop & verify locally (before publishing)
 
 ```sh
-# 1. Syntax / structure checks
+# 1. Syntax / structure checks (dynamic halves are `return { … }` bodies —
+#    wrap them in a function for node --check)
 node --check lib/host.js
 node --check lib/client.js
+node -e "new Function('return async () => {' + require('fs').readFileSync('dynamic/plugin.host.js', 'utf8') + '}')"
+node -e "new Function('return async () => {' + require('fs').readFileSync('dynamic/plugin.client.js', 'utf8') + '}')"
 
 # 2. Pack and install into a throwaway profile (or your web profile)
 pnpm pack
@@ -135,14 +139,25 @@ third-party (see above).
 
 ## Zero-install alternative: dynamic Cordis plugin
 
-No npm needed — recreate the plugin in any session by copying the `scholar-lab/`
-folder from the source repo next to the working directory and pasting into chat:
+No npm and no local files needed — the dynamic form is versioned in this
+repository (`dynamic/plugin.host.js` / `dynamic/plugin.client.js`, kept in
+sync with the packaged `lib/`). Create it in any session by pasting this into
+chat:
 
 > Create a Cordis plugin with `kind: "new"`, `idPrefix: "schlr"`, name "Google
 > Scholar Lab", purpose "Search Google Scholar for papers with full journal
-> names, JCR impact factors, and CSV export of paper metadata". Use `code.host`
-> from the file `scholar-lab/plugin.host.js` and `code.client` from
-> `scholar-lab/plugin.client.js`.
+> names, JCR impact factors, and CSV export of paper metadata". Use curl to
+> fetch the content of
+> `https://raw.githubusercontent.com/medfm-flare/dsh-scholar-lab/main/dynamic/plugin.host.js`
+> and use it as `code.host`; do the same with
+> `https://raw.githubusercontent.com/medfm-flare/dsh-scholar-lab/main/dynamic/plugin.client.js`
+> for `code.client`. If the network is unavailable, read both files from the
+> installed package's `dynamic/` folder instead.
 
-Dynamic plugins are per-session and in-memory — they disappear when the process
-restarts.
+Optional — JCR impact factors (the plugin degrades gracefully without them):
+fetch
+`https://raw.githubusercontent.com/medfm-flare/dsh-scholar-lab/main/data/journal-impact-factors.json`
+into the working directory as `journal-impact-factors.json`.
+
+Dynamic plugins are per-session and in-memory — they disappear when the
+process restarts.
