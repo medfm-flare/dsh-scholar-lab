@@ -1,5 +1,5 @@
 {
-  "name": "@yourscope/dsh-scholar-lab",
+  "name": "@junma11/dsh-scholar-lab",
   "version": "0.1.0",
   "description": "Google Scholar search agent for DSH: structured paper metadata, JCR impact factors, full abstracts, and CSV export. Installable as a profile bundle (npm) or as a dynamic Cordis plugin.",
   "keywords": [
@@ -19,11 +19,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/YOUR-ORG/dsh-scholar-lab.git"
-  },
-  "homepage": "https://github.com/YOUR-ORG/dsh-scholar-lab#readme",
   "main": "lib/host.js",
   "exports": {
     ".": "./lib/host.js",

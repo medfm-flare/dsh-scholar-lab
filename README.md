@@ -1,3 +1,4 @@
+
 # dsh-scholar-lab
 
 **Google Scholar search agent for DeepSeek Harness (DSH)** — publishable as an npm
@@ -9,21 +10,19 @@ Search Google Scholar for academic papers and get structured metadata — title,
 year, cited-by count, abstract-excerpt snippet, PDF link, versions — plus full
 abstracts from publisher pages and **CSV export** of any result set.
 
-
 ## Feature comparison
 
-| Capability | This plugin (Scholar Lab for DSH) | Google Scholar Labs |
-| --- | --- | --- |
-| **Access** | No login needed, works from any session/host | **Login required** (no anonymous API; also no CORS from third-party pages) |
-| **Search source** | Same underlying Scholar index (classic endpoint) | Same index, but an AI "research mode" on top |
-| **Structured metadata (title, authors, journal, year, citations)** | ✅ Full structured JSON per paper | ✅ (the "familiar Scholar features") but as web UI, not structured data |
-| **Full journal names** | ✅ Resolved from bundled JCR database | Shows venue as Scholar renders it |
-| **JCR impact factor + quartile** | ✅ JCR 2025 (June 2026 release), 22.6k journals | ❌ Scholar doesn't show IFs |
-| **Full abstract + DOI, volume/issue/pages, publisher** | ✅ via `scholar_abstract` (publisher meta tags) | Labs gives summaries, not structured bibliographic records |
-| **CSV export (all loaded papers, 22 columns)** | ✅ One click → downloads to your laptop | ❌ No bulk/structured export |
-| **Pagination / "load more"** | ✅ Up to 100 papers per search | Page-based browsing, no export |
-| **Use from chat / automation** | ✅ Model tools `scholar_search` / `scholar_abstract` — results feed the agent | ❌ Browser UI only |
-
+| Capability                                                               | This plugin (Scholar Lab for DSH)                                                 | Google Scholar Labs                                                              |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Access**                                                         | No login needed, works from any session/host                                      | **Login required** (no anonymous API; also no CORS from third-party pages) |
+| **Search source**                                                  | Same underlying Scholar index (classic endpoint)                                  | Same index, but an AI "research mode" on top                                     |
+| **Structured metadata (title, authors, journal, year, citations)** | ✅ Full structured JSON per paper                                                 | ✅ (the "familiar Scholar features") but as web UI, not structured data          |
+| **Full journal names**                                             | ✅ Resolved from bundled JCR database                                             | Shows venue as Scholar renders it                                                |
+| **JCR impact factor + quartile**                                   | ✅ JCR 2025 (June 2026 release), 22.6k journals                                   | ❌ Scholar doesn't show IFs                                                      |
+| **Full abstract + DOI, volume/issue/pages, publisher**             | ✅ via`scholar_abstract` (publisher meta tags)                                  | Labs gives summaries, not structured bibliographic records                       |
+| **CSV export (all loaded papers, 22 columns)**                     | ✅ One click → downloads to your laptop                                          | ❌ No bulk/structured export                                                     |
+| **Pagination / "load more"**                                       | ✅ Up to 100 papers per search                                                    | Page-based browsing, no export                                                   |
+| **Use from chat / automation**                                     | ✅ Model tools`scholar_search` / `scholar_abstract` — results feed the agent | ❌ Browser UI only                                                               |
 
 ## In short
 
@@ -32,11 +31,10 @@ abstracts from publisher pages and **CSV export** of any result set.
 
 They're complementary: use Labs when you want an AI conversation about a research area; use this plugin when you want a reproducible list of papers with bibliometrics you can export and cite-check. The panel even links to your logged-in Labs page, so both are one click apart.
 
-
 ## Install (profile bundle — the community path)
 
 ```sh
-dsh plugin --profile web add @yourscope/dsh-scholar-lab
+dsh plugin --profile web add @junma11/dsh-scholar-lab
 dsh web
 ```
 
@@ -46,7 +44,7 @@ stack (`dsh.profile.bundles`) and its `cordis.patch.yml` composes into the app
 config. Remove with:
 
 ```sh
-dsh plugin --profile web remove @yourscope/dsh-scholar-lab
+dsh plugin --profile web remove @junma11/dsh-scholar-lab
 ```
 
 > Requires `@deepseek-ai/dsh` ≥ 0.1.0 and the base profile's `shell` service
@@ -54,26 +52,24 @@ dsh plugin --profile web remove @yourscope/dsh-scholar-lab
 
 ## What you get
 
-| Surface | Description |
-| --- | --- |
-| `scholar_search` tool | Chat-side search: `query`, `max_results` (1–20), `start`, `year` (`"2020"` or `"2018-2023"`), `lang`, `export_csv` (writes `scholar-lab/scholar-export-*.csv` into the workspace via the `fs` service) |
-| `scholar_abstract` tool | Full abstract + HighWire `citation_*` metadata from a result/publisher URL |
-| Search panel (UI) | Run-card panel with search box, pagination ("Load more papers", deduped, ≤100), and **Download CSV** (browser-side, nothing written to the host) |
-| Result cards | `scholar_search` / `scholar_abstract` result views with JCR IF badges |
+| Surface                   | Description                                                                                                                                                                                                                |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scholar_search` tool   | Chat-side search:`query`, `max_results` (1–20), `start`, `year` (`"2020"` or `"2018-2023"`), `lang`, `export_csv` (writes `scholar-lab/scholar-export-*.csv` into the workspace via the `fs` service) |
+| `scholar_abstract` tool | Full abstract + HighWire`citation_*` metadata from a result/publisher URL                                                                                                                                                |
+| Search panel (UI)         | Run-card panel with search box, pagination ("Load more papers", deduped, ≤100), and**Download CSV** (browser-side, nothing written to the host)                                                                     |
+| Result cards              | `scholar_search` / `scholar_abstract` result views with JCR IF badges                                                                                                                                                  |
 
-Per-paper fields: `title, authors[], authors_raw, venue, journal_full,
-impact_factor, jif_quartile, publisher, year, cited_by, snippet, link, pdf,
-versions, cluster_id, cites_id, result_id`.
+Per-paper fields: `title, authors[], authors_raw, venue, journal_full, impact_factor, jif_quartile, publisher, year, cited_by, snippet, link, pdf, versions, cluster_id, cites_id, result_id`.
 
 ## Package layout
 
-| File | Contents |
-| --- | --- |
-| `lib/host.js` | Host half: `scholar_search` / `scholar_abstract` tools (`ctx.tools.register` + `defineTool` from `@deepseek-ai/dsh-tools`), the `scholarLab` service (`ctx.provide`) for the panel, CSV writer |
-| `lib/client.js` | Client half: browser bundle in the web-shell module-table format (`window.__ModuleLoader__.load`), search panel + tool result cards |
-| `data/journal-impact-factors.json` | JCR 2025 database (full names, IFs, quartiles) — 22,643 journals, 1.5 MB, read from the package via `import.meta.url` |
-| `cordis.patch.yml` | Bundle patch layer: inserts the `scholar-lab` (host) and `scholar-lab-client` (browser roster) rows |
-| `scholar-lab/` (source) | The original dynamic Cordis plugin files this package was generated from |
+| File                                 | Contents                                                                                                                                                                                                    |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/host.js`                      | Host half:`scholar_search` / `scholar_abstract` tools (`ctx.tools.register` + `defineTool` from `@deepseek-ai/dsh-tools`), the `scholarLab` service (`ctx.provide`) for the panel, CSV writer |
+| `lib/client.js`                    | Client half: browser bundle in the web-shell module-table format (`window.__ModuleLoader__.load`), search panel + tool result cards                                                                       |
+| `data/journal-impact-factors.json` | JCR 2025 database (full names, IFs, quartiles) — 22,643 journals, 1.5 MB, read from the package via`import.meta.url`                                                                                     |
+| `cordis.patch.yml`                 | Bundle patch layer: inserts the`scholar-lab` (host) and `scholar-lab-client` (browser roster) rows                                                                                                      |
+| `scholar-lab/` (source)            | The original dynamic Cordis plugin files this package was generated from                                                                                                                                    |
 
 ## Develop & verify locally (before publishing)
 
@@ -84,7 +80,7 @@ node --check lib/client.js
 
 # 2. Pack and install into a throwaway profile (or your web profile)
 pnpm pack
-dsh plugin --profile web add ./dsh-scholar-lab-0.1.0.tgz
+dsh plugin --profile web add ./junma11-dsh-scholar-lab-0.1.0.tgz
 
 # 3. Confirm the layers compose without booting
 dsh --profile web --dump-config | grep -A3 scholar-lab
